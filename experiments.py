@@ -1,5 +1,5 @@
 
-from topic_extraction_methods import get_topics
+from topic_extraction_methods import get_topics, get_topics_spacy
 import topic_extraction_methods
 from fuzzywuzzy import process
 
@@ -12,7 +12,7 @@ from fuzzywuzzy import process
 # BASE ARTICLE -> TOPIC LIST
 
 # VALIDATION
-
+import numpy as np
 # #? Should this take perplexity into account?
 
 # 1) Semantic Search for 
@@ -22,35 +22,44 @@ dataset = load_dataset("xsum")
 
 train = dataset['train']
 
+from tqdm import tqdm
+
 samples = []
-for i, sample in enumerate(train):
+for i, sample in enumerate(tqdm(train)):
     samples.append(
         {
         "document": sample['document'],
          "summary": sample['summary']
          })
-    if i > 20:
-        break
+    # if i > 200:
+    #     break
 
-
-
+from fuzzywuzzy import fuzz
 
 
 def get_highest_fuzzy_match_score(document, summary):
-    topics = get_topics(document)
-    print(topics)
-    matches = process.extract(summary.lower(), topics, limit=1)
-    # print(summary, topics, matches)
-    top_score = matches[0][1]
+    topics = get_topics_spacy(document)
+    # print(topics)
+    top_score = 0.0
+    if topics:
+        matches = process.extract(summary.lower(), topics, limit=1, scorer=fuzz.partial_ratio)
+        # print(summary, topics, matches)
+        top_score = matches[0][1]
     #? This top score represents the best similarity between any of the topics and the summary
     return top_score
 #* FUZZY Search
 
-for sample in samples:
+scores = []
+for i, sample in enumerate(samples):
     document = sample['document']
     summary = sample['summary']
     score = get_highest_fuzzy_match_score(document, summary)
-    print(summary)
-    print(score)
-
+    # print(summary)
+    scores.append(score)
+    print(f"Running Average: {np.mean(scores)}  {i+1}/{len(samples)}", end="\r")
+print(np.mean(scores))
 #Compare score of extracted topics to Ground truth, which is
+
+
+#get ratio of keywords to summaries
+#compare to average
