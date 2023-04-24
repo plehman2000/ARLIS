@@ -47,13 +47,25 @@ def get_highest_fuzzy_match_score(document, summary):
         top_score = matches[0][1]
     #? This top score represents the best similarity between any of the topics and the summary
     return top_score
+
+
+def get_highest_semantic_match_score(document, summary):
+    topics = get_topics_spacy(document)
+    # print(topics)
+    top_score = 0.0
+    if topics:
+        matches = process.extract(summary.lower(), topics, limit=1, scorer=fuzz.partial_ratio)
+        # print(summary, topics, matches)
+        top_score = matches[0][1]
+    #? This top score represents the best similarity between any of the topics and the summary
+    return top_score
 #* FUZZY Search
 
 scores = []
 for i, sample in enumerate(samples):
     document = sample['document']
     summary = sample['summary']
-    score = get_highest_fuzzy_match_score(document, summary)
+    score = get_highest_semantic_match_score(document, summary)
     # print(summary)
     scores.append(score)
     print(f"Running Average: {np.mean(scores)}  {i+1}/{len(samples)}", end="\r")
