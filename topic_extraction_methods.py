@@ -60,7 +60,7 @@ def to_BERT_embedding(text):
 
     # Split the sentence into tokens.
     tokenized_text = tokenizer.tokenize(marked_text)
-    print(len(tokenized_text))
+    # print(len(tokenized_text))
     if len(tokenized_text) > 4096:
         tokenized_text = tokenized_text[:4096]
     # Map the token strings to their vocabulary indeces.

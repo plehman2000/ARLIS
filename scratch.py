@@ -2,17 +2,28 @@ import numpy as np
 
 import pandas as pd
 
-df = pd.read_csv("fort.csv")
-# print(df)
-samples = []
-for row in df.iterrows():
-    row = row[1]
-    print(row)
-    sample = {
-        "text": row['text_EN'],
-        "topics": [row['Topic 1'].split("|")[0], row['Topic 2'].split("|")[0]]
-    }
-    samples.append(sample)
+# df = pd.read_csv("fort.csv")
+# # print(df)
+# samples = []
+# for row in df.iterrows():
+#     row = row[1]
+#     print(row)
+#     sample = {
+#         "text": row['text_EN'],
+#         "topics": [row['Topic 1'].split("|")[0], row['Topic 2'].split("|")[0]]
+#     }
+#     samples.append(sample)
+    
 
 
+sample = """"We took actions aimed at the fact that electricity to every family, household, up to 2000 kWh is at a fixed price, in fact to date. In short - despite the huge increase in fuel costs, all that creates energy, when it comes to this Quite a significant amount of electricity used by families, the price will not be increased, "he said. As he added," it is about two -thirds of households, the poorer ones, there is essentially no change. " The PiS president also announced that "if someone reduces consumption compared to the previous year, by at least 10 %, they will have further relief." "It is not enough for basic products" the government is already working on freezing electricity prices about the fact that work has started in the government, the freezing of electricity prices was confirmed by Norbert Maliszewski, head of the Government Center of Analysis, Secretary of State in the Chancellery of the Prime Minister. "We have taken actions aimed at electricity in 2023 for each family for consumption of 2000 kWh (average consumption, median) was basically at the current price" - we read on its twitter profile.twitter. Let's help let the freezing of electricity prices announce earlier Mateusz Morawiecki. On September 5, he said - "We are thinking about such a price scheme for electricity, which will promote the use of electricity in an economical way, as is happening in all Western European countries. We are considering freezing electricity prices at a certain level, but only to some ceiling consumption ". The prime minister then mentioned that the freezing of prices would apply to the poorest families. "Those who are more affluent, they can afford to use electricity without saving to pay more. But for those who have shallower wallets will be better supported by such policy," he said. Cheaper electricity only for selected ones see also we have the most expensive electricity in Europe. The increases can be the drastic "freezing of energy prices for the poorest is a better idea than global. Limit 2000 kWh is not enough. However, only the smallest energy users will benefit" - this is how the proposals of President Jarosław Kaczyński will benefit, says Wojciech Jakóbik, an expert of the Jagiellonian Club Energy Market and editor -in -chief of the BiznesAlert portal .pl. This is confirmed by statistics. On average, a one -man household consumes about 900 kWh to 1,400 kWh of electricity per year, i.e. from 75 kWh to even 116 kWh per month. In turn, the average power consumption per person at home is at a level of not less than 500 kWh per year, i.e. 42 kWh per month. It can therefore be estimated that the average electricity consumption during the year is: in a 2-person household approx. 1500 kWh, in a 3-person household approx. 2000 kWh, in a 4-person household approx. 2500 kWh, in 5- passenger household approx. 3000 kWh. This data can be seen that - according to the rulers' announcements - singles, childless couples and at most families with one child can count on the maintenance of existing current prices in 2023. According to CSO data, it is about 70 percent. households in Poland, assuming that three -person farms will fit in the 2000 kWh limit. The wealth of families here is of little importance, or rather what the apartment is cooked in a given family. The average, monthly electricity bill pays about PLN 125-130, assuming that it does not cook or heat the apartment or house with electricity. Responding to numerous comments and comments on Twitter, indicating that the maintenance of a consumption limit of 2000 kWh during the year is unreal for cooking or heating the house thanks to electricity, as well as for larger families (over 3 people), Norbert Maliszewski announced the essay by the government Additional solutions for e.g. large families, farms or electricity heating people. How much will it cost and who will pay for it? The government freezing the prices of currents at the current level in 2023, it will have to compensate for energy suppliers, and this means further multi -billion expenses from the state budget. "It can be for further compensation or financing from Windfall Tax (with excess energy producers' profits). The government must weigh the raison d'etat, which is threatened with hyperinflation and companies that must pay record deposits for the purchase of energy and gas from the stock exchange. The cost will be calculated in tens of billions of zlotys. The cost of all subsidies in the energy sector can so far exceed PLN 100 billion only in 2022 " - - - estimates Fakt Wojciech Jakóbik. Bonuses for saving not for everyone when it comes to additional bonuses for energy saving, then -As the expert notes - it is possible, but also in the case of some energy recipients."Premieving reduction of consumption is possible with intelligent meters and special tariffs. This is a good solution that should function a long time ago and in some commercial offers is available. Industrial recipients can have long earned on limiting consumption within DSR offered by Polish electricity networks - says Jakóbik.ostroin the Sejm. MP NOWACKA about Macierewicz: Smolensk liar! Head of the Teachers' Association about the increase in the brother -in -law Przemysław Czarnek. He reacted so when he saw the quotas to the heat, but not for everyone. The fate of government support is weighing."""
 
+from topic_extraction_methods import get_topics, get_topics_spacy, to_BERT_embedding,get_vector_similarity
+
+junk_words = ["the ukrainian war is ongoing", "bonnie j dorr is one cool cat", "no matchu", "Affordable electricity for poor families", "Gay Oppression in Poland", "Plan to freeze electricity price up to average consumption in 2023"]
+
+sample_embedding = to_BERT_embedding(sample)
+for x in junk_words:
+    vc = to_BERT_embedding(x)
+    sim = get_vector_similarity(vc, sample_embedding)
+    print(sim)
