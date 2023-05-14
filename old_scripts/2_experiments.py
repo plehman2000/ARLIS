@@ -1,7 +1,7 @@
 
 import topic_extraction_methods
 
-from topic_extraction_methods import get_topics, get_topics_spacy, to_BERT_embedding,get_vector_similarity
+from topic_extraction_methods import get_topics, to_BERT_embedding,get_vector_similarity
 from fuzzywuzzy import process
 import transformers
 # # ? HOW CAN WE ACCURATELY MEASURE THE CORRECTNESS OF TOPIC EXTRACTION METHODS?
@@ -39,7 +39,7 @@ from fuzzywuzzy import fuzz
 
 
 def get_highest_fuzzy_match_score(document, summary):
-    topics = get_topics_spacy(document)
+    topics = get_topics(document, method="spacy")
     # print(topics)
     top_score = 0.0
     if topics:
@@ -51,7 +51,7 @@ def get_highest_fuzzy_match_score(document, summary):
 
 
 def get_highest_semantic_match_score(document, summary):
-    topics = get_topics_spacy(document)
+    topics = get_topics(document, method="spacy")
     # print(topics)
     topic_embeddings = []
     top_score = 0.0

@@ -2,42 +2,10 @@
 # from sklearn.datasets import fetch_20newsgroups
 import spacy
 import torch
-from transformers import (
-    TokenClassificationPipeline,
-    AutoModelForTokenClassification,
-    AutoTokenizer,
-)
 from transformers.pipelines import AggregationStrategy
 import numpy as np
 
-# Define keyphrase extraction pipeline
-class KeyphraseExtractionPipeline(TokenClassificationPipeline):
-    def __init__(self, model, *args, **kwargs):
-        super().__init__(
-            model=AutoModelForTokenClassification.from_pretrained(model),
-            tokenizer=AutoTokenizer.from_pretrained(model),
-            *args,
-            **kwargs
-        )
 
-    def postprocess(self, model_outputs):
-        results = super().postprocess(
-            model_outputs, aggregation_strategy=AggregationStrategy.SIMPLE,
-        )
-        return np.unique([result.get("word").strip() for result in results])
-
-
-# Load pipeline
-model_name = "ml6team/keyphrase-extraction-kbir-inspec"
-extractor = KeyphraseExtractionPipeline(model=model_name)
-
-
-def get_topics(text):
-    # ? using miniLM
-    topics = extractor(text)
-    topics = list(topics)
-    topics = [str(x.lower()) for x in topics]
-    return topics
 
 
 from transformers import BertTokenizer, BertModel, LongformerTokenizer, LongformerModel
@@ -53,7 +21,7 @@ model = LongformerModel.from_pretrained(
 model.eval()
 
 
-def to_BERT_embedding(text):
+def to_longformer_embedding(text):
 
     # Add the special tokens.
     marked_text = "[CLS] " + text + " [SEP]"
@@ -87,19 +55,20 @@ def to_BERT_embedding(text):
     return embedding
 
 
-# Perform standard imports import spacy nlp = spacy.load('en_core_web_sm')
+# Perform standard imports import spacy nlp = spac`y.load('en_core_web_sm')
 # Write a function to display basic entity info: def show_ents(doc): if doc.ents: for ent in doc.ents: print(ent.text+' - ' +str(ent.start_char) +' - '+ str(ent.end_char) +' - '+ent.label_+ ' - '+str(spacy.explain(ent.label_))) else: print('No named entities found.')
 NER = spacy.load("en_core_web_sm")
 
 
-def get_topics_spacy(text):
-    doc = NER(text)
-    topic_entities = []
-    for x in doc.ents:
-        if x.label_ not in ["MONEY", "DATE"]:
-            topic_entities.append(str(x.text))
+def get_topics(text, method="spacy"):
+    if method == "spacy":
+        doc = NER(text)
+        topic_entities = []
+        for x in doc.ents:
+            if x.label_ not in ["MONEY", "DATE"]:
+                topic_entities.append(str(x.text))
 
-    return topic_entities
+        return topic_entities
 
 
 def get_vector_similarity(x1, x2):
