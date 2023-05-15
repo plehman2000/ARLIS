@@ -10,15 +10,15 @@ import numpy as np
 
 from transformers import BertTokenizer, BertModel, LongformerTokenizer, LongformerModel
 
-tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
-# Load pre-trained model (weights)
-model = LongformerModel.from_pretrained(
-    "allenai/longformer-base-4096",
-    output_hidden_states=True,  # Whether the model returns all hidden-states.
-)
+# tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
+# # Load pre-trained model (weights)
+# model = LongformerModel.from_pretrained(
+#     "allenai/longformer-base-4096",
+#     output_hidden_states=True,  # Whether the model returns all hidden-states.
+# )
 
-# Put the model in "evaluation" mode, meaning feed-forward operation.
-model.eval()
+# # Put the model in "evaluation" mode, meaning feed-forward operation.
+# model.eval()
 
 
 def to_longformer_embedding(text):

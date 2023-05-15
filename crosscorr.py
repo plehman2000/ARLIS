@@ -28,7 +28,7 @@ for row in df.iterrows():
 
 
 # * Scorers/Metrics
-from rouge_score import rouge_scorer
+# from rouge_score import rouge_scorer
 def get_vector_similarity(x1, x2):
     similarity = torch.nn.functional.cosine_similarity(x1=x1, x2=x2, dim=-1)
     return similarity
@@ -36,7 +36,10 @@ def get_vector_similarity(x1, x2):
 
 # rougeL = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
 
+from rouge_score import rouge_scorer
 nlp = spacy.load("en_core_web_md")
+# matcher = mf.chrf_matcher
+    
 from topic_extraction_methods import to_longformer_embedding
 
 def calculate_metric(x1,x2, metric="rougeLSum"):
@@ -52,13 +55,15 @@ def calculate_metric(x1,x2, metric="rougeLSum"):
         reference_vector = to_longformer_embedding(x1)
         text_vector = to_longformer_embedding(x2)
         return get_vector_similarity(torch.tensor(reference_vector), torch.tensor(text_vector))
-        
+
         
     
 default_sentence = ""
 rouge_L_scores_correlations = []
 spacy_wordnet_correlations = []
 longformer_embedding_correlations = []
+smart_embedding_correlations = []
+
 
 for sample in tqdm(samples):
     topics = get_topics(sample["text"], method="spacy")
@@ -96,24 +101,38 @@ for sample in tqdm(samples):
     spacy_wordnet_correlations.append(spacy_wordnet_r) 
     
     #? Longoformer
-    fmeasurex1 = calculate_metric(sample['topics'][0], sample['text'], metric="longformer")
-    fmeasurex2 = calculate_metric(sample['topics'][1], sample['text'], metric="longformer")
-    fmeasure3 = np.mean([fmeasurex1, fmeasurex2])
+#     fmeasurex1 = calculate_metric(sample['topics'][0], sample['text'], metric="longformer")
+#     fmeasurex2 = calculate_metric(sample['topics'][1], sample['text'], metric="longformer")
+#     fmeasure3 = np.mean([fmeasurex1, fmeasurex2])
     
-    fmeasure2 = calculate_metric(" ".join(topics), sample['text'], metric="longformer")
+#     fmeasure2 = calculate_metric(" ".join(topics), sample['text'], metric="longformer")
     
-    fmeasure1 = calculate_metric(default_sentence, sample['text'], metric="longformer")
+#     fmeasure1 = calculate_metric(default_sentence, sample['text'], metric="longformer")
     
-    longformer_scores =[fmeasure3, fmeasure2, fmeasure1]
-    longformer_r = np.corrcoef(longformer_scores, [3,2,1])[0][1]
+#     longformer_scores =[fmeasure3, fmeasure2, fmeasure1]
+#     longformer_r = np.corrcoef(longformer_scores, [3,2,1])[0][1]
     
-    longformer_embedding_correlations.append(longformer_r) 
+#     longformer_embedding_correlations.append(longformer_r) 
+
+    # fmeasurex1 = calculate_metric(sample['topics'][0], sample['text'], metric="smart")
+    # fmeasurex2 = calculate_metric(sample['topics'][1], sample['text'], metric="smart")
+    # fmeasure3 = np.mean([fmeasurex1, fmeasurex2])
+    
+    # fmeasure2 = calculate_metric(" ".join(topics), sample['text'], metric="smart")
+    
+    # fmeasure1 = calculate_metric(default_sentence, sample['text'], metric="smart")
+    
+    # smart_scores =[fmeasure3, fmeasure2, fmeasure1]
+    # smart_r = np.corrcoef(smart_scores, [3,2,1])[0][1]
+    
+    # smart_embedding_correlations.append(smart_r) 
     # 
     
 
 print(f"rouge_L_scores_correlations: {np.mean(rouge_L_scores_correlations)}")
 print(f"spacy_wordnet_correlations: {np.mean(spacy_wordnet_correlations)}")
 print(f"longformer_embedding_correlations: {np.mean(longformer_embedding_correlations)}")
+# print(f"smart_embedding_correlations: {np.mean(longformer_embedding_correlations)}")
 #! Calculate relevant metrics
 
 
