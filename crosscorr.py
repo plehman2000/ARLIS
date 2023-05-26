@@ -57,7 +57,7 @@ def calculate_metric(x1,x2, metric="rougeLSum"):
         return get_vector_similarity(torch.tensor(reference_vector), torch.tensor(text_vector))
 
         
-    
+
 default_sentence = ""
 rouge_L_scores_correlations = []
 spacy_wordnet_correlations = []
